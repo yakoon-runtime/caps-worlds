@@ -12,8 +12,9 @@ invocation:
     positional: true
   - key: direction
   - key: via
-  - key: twoway
   - key: world
+  - key: twoway
+    kind: flag
 resources:
   ref: resource:y5n.packs.luma.resources.loader:content
   man:
