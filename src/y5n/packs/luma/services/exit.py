@@ -41,6 +41,7 @@ class ExitService:
                     world_id=data.world_id,
                     source_box_id=data.source_box_id,
                     target_box_id=data.target_box_id,
+                    target_world_id=data.target_world_id,
                     name=data.name,
                     description=data.description,
                     direction=data.direction,
@@ -58,6 +59,7 @@ class ExitService:
             world_id=data.world_id,
             source_box_id=data.source_box_id,
             target_box_id=data.target_box_id,
+            target_world_id=data.target_world_id,
             name=data.name,
             description=data.description,
             direction=data.direction,
@@ -78,10 +80,12 @@ class ExitService:
         world_id: str,
         source_box_id: str,
         target_box_id: str,
+        target_world_id: str | None = None,
         name: str,
         description: str = "",
         direction: str = "",
     ) -> Exit:
+        final_target_world = world_id if target_world_id is None else target_world_id
         for e in await self._all_exits():
             if e.source_box_id == source_box_id and e.name.lower() == name.lower():
                 raise ValueError(f"Exit '{name}' already exists from this box.")
@@ -90,6 +94,7 @@ class ExitService:
             world_id=world_id,
             source_box_id=source_box_id,
             target_box_id=target_box_id,
+            target_world_id=final_target_world,
             name=name,
             description=description,
             direction=direction,
@@ -100,6 +105,7 @@ class ExitService:
             world_id=world_id,
             source_box_id=source_box_id,
             target_box_id=target_box_id,
+            target_world_id=final_target_world,
             name=name,
             description=description,
             direction=direction,

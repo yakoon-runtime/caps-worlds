@@ -37,6 +37,11 @@ async def main():
         f"  From: {box_ref} (#{e.source_box_id})",
         f"  To:   {tgt_name} (#{e.target_box_id})",
     ]
+    if e.target_world_id and e.target_world_id != e.world_id:
+        worlds = ports.get("luma.world.service")
+        world = await worlds.get_world(world_id=e.target_world_id)
+        world_name = world.name if world else f"world {e.target_world_id}"
+        lines.append(f"  World: {world_name}")
     if e.direction:
         lines.append(f"  Direction: {e.direction}")
     if e.description:

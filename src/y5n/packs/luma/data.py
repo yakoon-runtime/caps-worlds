@@ -69,6 +69,7 @@ class ExitData:
     world_id: str
     source_box_id: str
     target_box_id: str
+    target_world_id: str | None = None
     name: str = ""
     description: str = ""
     direction: str = ""
@@ -79,6 +80,7 @@ class ExitData:
             "world_id": self.world_id,
             "source_box_id": self.source_box_id,
             "target_box_id": self.target_box_id,
+            "target_world_id": self.target_world_id,
             "name": self.name,
             "description": self.description,
             "direction": self.direction,
@@ -92,6 +94,7 @@ class ExitData:
             world_id=d["world_id"],
             source_box_id=d["source_box_id"],
             target_box_id=d["target_box_id"],
+            target_world_id=d.get("target_world_id"),
             name=d.get("name", ""),
             description=d.get("description", ""),
             direction=d.get("direction", ""),

@@ -42,6 +42,11 @@ World
 **Everything has a place.**  
 **Ideas exist before places.**
 
+Worlds are not isolated. An *exit* may lead from a box in one world into a
+box of another world — a wardrobe that opens into a different knowledge
+area. Moving through such an exit switches the current world; the world you
+leave stays where it was, connected and reachable again.
+
 ## A Walkthrough
 
 ```bash

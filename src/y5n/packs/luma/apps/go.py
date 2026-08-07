@@ -62,5 +62,16 @@ async def main():
         await io.write(f"Exit leads nowhere (box #{e.target_box_id} missing).")
         return
 
-    await ports.get("session").update(patch={"data": {"luma.current_box": target.id}})
-    await io.write(f"{target.name}")
+    target_world = e.target_world_id or current_world
+    patch = {"luma.current_box": target.id}
+    if target_world != current_world:
+        patch["luma.current_world"] = target_world
+    await ports.get("session").update(patch={"data": patch})
+
+    if target_world != current_world:
+        worlds = ports.get("luma.world.service")
+        world = await worlds.get_world(world_id=target_world)
+        world_name = world.name if world else f"world {target_world}"
+        await io.write(f"{target.name} (world '{world_name}')")
+    else:
+        await io.write(f"{target.name}")

@@ -24,13 +24,23 @@ async def main():
     direction = context.request().option("direction") or ""
     via = context.request().option("via") or target_ref
     twoway = context.request().has_option("twoway")
+    world_ref = context.request().option("world")
 
     if not target_ref:
         await io.write("Error: target name is required.")
         return
 
+    target_world = current_world
+    if world_ref:
+        worlds = ports.get("luma.world.service")
+        world = await worlds.get_world_by_name(name=world_ref)
+        if world is None:
+            await io.write(f"World '{world_ref}' not found.")
+            return
+        target_world = world.id
+
     boxes = ports.get("luma.box.service")
-    existing = await boxes.list_boxes(world_id=current_world, parent_id=None)
+    existing = await boxes.list_boxes(world_id=target_world, parent_id=None)
     target = next((b for b in existing if b.name.lower() == target_ref.lower()), None)
 
     if target is None:
@@ -43,6 +53,7 @@ async def main():
         world_id=current_world,
         source_box_id=current_box,
         target_box_id=target.id,
+        target_world_id=target_world,
         name=via,
         direction=direction,
     )
@@ -52,9 +63,10 @@ async def main():
     if twoway:
         rev_dir = _OPPOSITE.get(direction.lower()) if direction else ""
         await exits.connect(
-            world_id=current_world,
+            world_id=target_world,
             source_box_id=target.id,
             target_box_id=current_box,
+            target_world_id=current_world,
             name=via,
             direction=rev_dir,
         )

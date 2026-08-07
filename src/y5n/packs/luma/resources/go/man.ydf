@@ -7,6 +7,7 @@ go ..</pre>
 <heading level="2">Description</heading>
 <paragraph>Moves to a connected box via an exit or to a child box.</paragraph>
 <paragraph>Use go .. to move back to the parent box.</paragraph>
+<paragraph>Following an exit that leads into another world moves you into that world.</paragraph>
 <heading level="2">Examples</heading>
 <pre>go north
   Follow an exit leading north.

@@ -34,11 +34,16 @@ async def main():
         return
 
     lines = ["Exits:"]
+    worlds = ports.get("luma.world.service")
     for e in exits_list:
         source = await boxes.get_box(box_id=e.source_box_id)
         target = await boxes.get_box(box_id=e.target_box_id)
         src_name = source.name if source else f"#{e.source_box_id}"
         tgt_name = target.name if target else f"#{e.target_box_id}"
+        if e.target_world_id and e.target_world_id != e.world_id:
+            world = await worlds.get_world(world_id=e.target_world_id)
+            world_name = world.name if world else f"world {e.target_world_id}"
+            tgt_name = f"{tgt_name} ({world_name})"
         line = f"  #{e.id} {e.name or '?'}: {src_name} -> {tgt_name}"
         if e.direction:
             line += f" ({e.direction})"

@@ -32,6 +32,10 @@ async def main():
         for e in from_here:
             target = await boxes.get_box(box_id=e.target_box_id)
             target_name = target.name if target else f"#{e.target_box_id}"
+            if e.target_world_id and e.target_world_id != current_world:
+                world = await worlds.get_world(world_id=e.target_world_id)
+                world_name = world.name if world else f"world {e.target_world_id}"
+                target_name = f"{target_name} (world '{world_name}')"
             label = e.name or e.direction or "?"
             if e.direction and e.name:
                 lines.append(f"  {e.direction}: {label} -> {target_name}")
