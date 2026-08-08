@@ -71,11 +71,13 @@ async def main():
             return
         endpoint = nearest
 
-    connection = await connections.get(endpoint.connection_id)
+    connection = await connections.get(connection_id=endpoint.connection_id)
     if connection is None:
         await io.write("Exit leads nowhere (connection missing).")
         return
-    other = await connections.other_endpoint(connection, current_box)
+    other = await connections.other_endpoint(
+        connection_id=connection.id, box_id=current_box
+    )
     if other is None:
         await io.write("Exit leads nowhere (connection incomplete).")
         return

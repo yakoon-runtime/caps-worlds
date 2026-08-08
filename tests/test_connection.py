@@ -2,6 +2,11 @@ import pytest
 from y5n.packs.luma.models import Orientation
 
 
+def _angle(direction: str) -> float:
+    o = Orientation.from_notation(direction)
+    return o.angle if o is not None else 0.0
+
+
 async def _world_with_box(worlds, boxes, name="A"):
     world = await worlds.add_world(name="Welt", description="")
     box = await boxes.add_box(
@@ -12,7 +17,7 @@ async def _world_with_box(worlds, boxes, name="A"):
 
 async def _other_box(connections, boxes, endpoint, current_box):
     conn = await connections.get(endpoint.connection_id)
-    other = await connections.other_endpoint(conn, current_box)
+    other = await connections.other_endpoint(conn.id, current_box)
     if other is None:
         return None
     return await boxes.get_box(box_id=other.box_id)
@@ -32,7 +37,7 @@ async def test_connect_creates_connection_with_two_endpoints(
         box_a_id=raum_a.id,
         box_b_id=raum_b.id,
         name_a="Tür",
-        orientation_a=Orientation.from_notation("east"),
+        orientation_a=_angle("east"),
     )
 
     assert conn.bidirectional is True

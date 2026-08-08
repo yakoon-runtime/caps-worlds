@@ -13,6 +13,14 @@ class OnScan(Protocol):
     async def __call__(self, *, namespace) -> list: ...
 
 
+def _wrap_orientation(angle: float | None) -> Orientation | None:
+    return Orientation(angle) if angle is not None else None
+
+
+def _unwrap_orientation(orientation: Orientation | None) -> float | None:
+    return orientation.angle if orientation is not None else None
+
+
 class EndpointService:
     def __init__(
         self,
@@ -57,15 +65,16 @@ class EndpointService:
         connection_id: str,
         name: str = "",
         description: str = "",
-        orientation: Orientation | None = None,
+        orientation: float | None = None,
     ) -> Endpoint:
+        """Create an endpoint. *orientation* is an angle in degrees (or None)."""
         next_id = await self._on_next_id(prefix="p")
         data = EndpointData(
             box_id=box_id,
             connection_id=connection_id,
             name=name,
             description=description,
-            orientation=orientation.angle if orientation is not None else None,
+            orientation=orientation,
         )
         await self._on_replace(key=endpoint_key(str(next_id)), doc=data.to_dict())
         return Endpoint(
@@ -74,7 +83,7 @@ class EndpointService:
             connection_id=connection_id,
             name=name,
             description=description,
-            orientation=orientation,
+            orientation=_wrap_orientation(orientation),
         )
 
     async def update(
@@ -85,12 +94,16 @@ class EndpointService:
         connection_id: str | None = None,
         name: str | None = None,
         description: str | None = None,
-        orientation: Orientation | None = None,
+        orientation: float | None = None,
     ) -> Endpoint:
         e = await self.get(endpoint_id)
         if e is None:
             raise ValueError(f"Endpoint '{endpoint_id}' not found.")
-        final_orientation = orientation if orientation is not None else e.orientation
+        final_angle = (
+            orientation
+            if orientation is not None
+            else _unwrap_orientation(e.orientation)
+        )
         data = EndpointData(
             box_id=box_id if box_id is not None else e.box_id,
             connection_id=(
@@ -98,9 +111,7 @@ class EndpointService:
             ),
             name=name if name is not None else e.name,
             description=description if description is not None else e.description,
-            orientation=(
-                final_orientation.angle if final_orientation is not None else None
-            ),
+            orientation=final_angle,
         )
         await self._on_replace(key=endpoint_key(endpoint_id), doc=data.to_dict())
         return Endpoint(
@@ -109,7 +120,7 @@ class EndpointService:
             connection_id=data.connection_id,
             name=data.name,
             description=data.description,
-            orientation=final_orientation,
+            orientation=_wrap_orientation(final_angle),
         )
 
     async def delete(self, endpoint_id: str) -> None:
@@ -122,7 +133,5 @@ class EndpointService:
             connection_id=data.connection_id,
             name=data.name,
             description=data.description,
-            orientation=(
-                Orientation(data.orientation) if data.orientation is not None else None
-            ),
+            orientation=_wrap_orientation(data.orientation),
         )

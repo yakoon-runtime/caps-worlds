@@ -5,7 +5,7 @@ from typing import Protocol
 from y5n.runtime.store.event.ports import OnDelete, OnGet, OnReplace
 
 from ..data import ConnectionData
-from ..models import Connection, Endpoint, Orientation
+from ..models import Connection, Endpoint
 from .endpoint import EndpointService
 from .namespaces import connection_key, connection_namespace
 
@@ -76,18 +76,22 @@ class ConnectionService:
         box_a_id: str,
         box_b_id: str,
         name_a: str,
-        orientation_a: Orientation | None = None,
+        orientation_a: float | None = None,
         name_b: str | None = None,
-        orientation_b: Orientation | None = None,
+        orientation_b: float | None = None,
         bidirectional: bool = True,
         description: str = "",
         kind: str = "path",
     ) -> Connection:
-        """Create a connection between two boxes plus its two endpoints."""
+        """Create a connection between two boxes plus its two endpoints.
+
+        Orientations are angles in degrees (or None); when only one side
+        is given, the other is its opposite.
+        """
         if name_b is None:
             name_b = name_a
         if orientation_b is None and orientation_a is not None:
-            orientation_b = Orientation.opposite(orientation_a)
+            orientation_b = (orientation_a + 180.0) % 360.0
 
         next_id = await self._on_next_id(prefix="c")
         endpoint_a = await self._endpoints.add(
@@ -172,16 +176,14 @@ class ConnectionService:
                 result.append(e)
         return result
 
-    async def endpoint_on(self, connection: Connection, box_id: str) -> Endpoint | None:
-        for e in await self.endpoints(connection.id):
+    async def endpoint_on(self, connection_id: str, box_id: str) -> Endpoint | None:
+        for e in await self.endpoints(connection_id):
             if e.box_id == box_id:
                 return e
         return None
 
-    async def other_endpoint(
-        self, connection: Connection, box_id: str
-    ) -> Endpoint | None:
-        for e in await self.endpoints(connection.id):
+    async def other_endpoint(self, connection_id: str, box_id: str) -> Endpoint | None:
+        for e in await self.endpoints(connection_id):
             if e.box_id != box_id:
                 return e
         return None

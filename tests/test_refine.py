@@ -2,6 +2,11 @@ import pytest
 from y5n.packs.luma.models import Orientation
 
 
+def _angle(direction: str) -> float:
+    o = Orientation.from_notation(direction)
+    return o.angle if o is not None else 0.0
+
+
 async def _world_with_box(worlds, boxes, name="A"):
     world = await worlds.add_world(name="Welt", description="")
     box = await boxes.add_box(
@@ -16,7 +21,7 @@ async def _connect_cardinal(connections, world_id, box, other, direction, name=N
         box_a_id=box.id,
         box_b_id=other.id,
         name_a=name or direction,
-        orientation_a=Orientation.from_notation(direction),
+        orientation_a=_angle(direction),
     )
 
 
@@ -27,7 +32,7 @@ async def _endpoints_excluding(connections, endpoints, box_id, other_id):
         conn = await connections.get(ep.connection_id)
         if conn is None:
             continue
-        other = await connections.other_endpoint(conn, box_id)
+        other = await connections.other_endpoint(conn.id, box_id)
         if other is not None and other.box_id == other_id:
             continue
         result.append(ep)
@@ -175,9 +180,9 @@ async def test_oneway_incoming_endpoint_classified_by_orientation(
         box_a_id=c.id,
         box_b_id=box.id,
         name_a="fall",
-        orientation_a=Orientation.from_notation("south"),
+        orientation_a=_angle("south"),
         name_b="fall",
-        orientation_b=Orientation.from_notation("north"),
+        orientation_b=_angle("north"),
         bidirectional=False,
     )
 

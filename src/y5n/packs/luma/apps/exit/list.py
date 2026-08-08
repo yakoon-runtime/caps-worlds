@@ -33,7 +33,7 @@ async def main():
 
     else:
         for connection in await connections.for_world(world_id=world_id):
-            for ep in await connections.endpoints(connection.id):
+            for ep in await connections.endpoints(connection_id=connection.id):
                 rows.append((ep, ep.box_id))
 
     if not rows:
@@ -43,9 +43,11 @@ async def main():
     lines = ["Exits:"]
     for ep, source_box_id in rows:
         source = await boxes.get_box(box_id=source_box_id)
-        connection = await connections.get(ep.connection_id)
+        connection = await connections.get(connection_id=ep.connection_id)
         other = (
-            await connections.other_endpoint(connection, source_box_id)
+            await connections.other_endpoint(
+                connection_id=connection.id, box_id=source_box_id
+            )
             if connection
             else None
         )

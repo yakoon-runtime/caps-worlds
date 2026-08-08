@@ -46,7 +46,7 @@ async def main():
         box_a_id=current_box,
         box_b_id=target.id,
         name_a=via,
-        orientation_a=orientation,
+        orientation_a=orientation.angle if orientation is not None else None,
         bidirectional=not oneway,
     )
 

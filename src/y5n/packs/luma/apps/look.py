@@ -30,9 +30,11 @@ async def main():
         lines.append("")
         lines.append("Exits:")
         for ep in from_here:
-            connection = await connections.get(ep.connection_id)
+            connection = await connections.get(connection_id=ep.connection_id)
             other = (
-                await connections.other_endpoint(connection, box.id)
+                await connections.other_endpoint(
+                    connection_id=connection.id, box_id=box.id
+                )
                 if connection
                 else None
             )

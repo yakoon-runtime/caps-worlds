@@ -30,8 +30,12 @@ async def main():
         return
 
     connections = ports.get("luma.connection.service")
-    connection = await connections.get(ep.connection_id)
-    other = await connections.other_endpoint(connection, src.id) if connection else None
+    connection = await connections.get(connection_id=ep.connection_id)
+    other = (
+        await connections.other_endpoint(connection_id=connection.id, box_id=src.id)
+        if connection
+        else None
+    )
     target = await boxes.get_box(box_id=other.box_id) if other else None
     tgt_name = target.name if target else f"#{other.box_id if other else '?'}"
 

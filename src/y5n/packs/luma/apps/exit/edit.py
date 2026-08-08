@@ -36,17 +36,16 @@ async def main():
 
     final_name = new_name if new_name is not None else ep.name
     final_desc = description if description is not None else ep.description
-    final_orientation = (
-        Orientation.from_notation(direction) if direction is not None else None
-    )
-    final_orientation = (
-        final_orientation if final_orientation is not None else ep.orientation
-    )
+    if direction is not None:
+        parsed = Orientation.from_notation(direction)
+        angle = parsed.angle if parsed is not None else None
+    else:
+        angle = ep.orientation.angle if ep.orientation is not None else None
 
     await endpoints.update(
         endpoint_id=ep.id,
         name=final_name,
         description=final_desc,
-        orientation=final_orientation,
+        orientation=angle,
     )
     await io.write(f"Exit '{exit_name}' updated.")

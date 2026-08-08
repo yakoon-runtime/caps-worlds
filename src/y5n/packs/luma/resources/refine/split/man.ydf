@@ -6,9 +6,9 @@
 refine split ANGLE --offset OFFSET</pre>
 
 <heading level="2">Description</heading>
-<paragraph>Refines the current room into two rooms. The split is a graph transformation: a second room is created and all exits are rewired automatically. Neither boxes nor exits are changed — only their connections.</paragraph>
+<paragraph>Refines the current room into two rooms. The split is a graph transformation: a second room is created, the halves are connected, and every endpoint of the current room is reassigned to the half its orientation falls into. Connections themselves stay unchanged.</paragraph>
 <paragraph>The angle is measured in the mathematical convention: 0° is east, angles count counterclockwise. The line always passes through the room's center. The optional offset (between -1 and 1, default 0) shifts the line along its normal: 0 is the center, ±1 puts the line on the edge.</paragraph>
-<paragraph>Exits are classified by the side of the line they lie on. An exit whose side midpoint lies exactly on the line stays with the original room.</paragraph>
+<paragraph>An endpoint whose orientation lies exactly on the line stays with the original room.</paragraph>
 
 <heading level="2">Examples</heading>
 <pre>refine split 90

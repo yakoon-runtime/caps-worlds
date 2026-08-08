@@ -87,14 +87,16 @@ class RefineService:
         nx, ny = _normal(angle_deg)
         fwd = _nearest_cardinal(nx, ny)
         rev = _opposite(fwd)
+        fwd_angle = Orientation.from_notation(fwd)
+        rev_angle = Orientation.from_notation(rev)
         connection = await self._connections.connect(
             world_id=world_id,
             box_a_id=box.id,
             box_b_id=new_box.id,
             name_a=fwd,
-            orientation_a=Orientation.from_notation(fwd),
+            orientation_a=fwd_angle.angle if fwd_angle is not None else None,
             name_b=rev,
-            orientation_b=Orientation.from_notation(rev),
+            orientation_b=rev_angle.angle if rev_angle is not None else None,
         )
 
         moved = 0
