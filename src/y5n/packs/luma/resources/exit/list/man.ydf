@@ -21,8 +21,9 @@ no box is specified.
 </paragraph>
 
 <paragraph>
-Exits are connections between boxes. Each exit has a name,
-a source box, a target box and an optional direction.
+An exit is an endpoint: the local view of a connection as
+seen from its box. It has a name, an orientation (angle from
+the room's own frame) and leads to another box.
 </paragraph>
 
 <heading level="2">

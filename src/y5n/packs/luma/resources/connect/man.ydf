@@ -1,19 +1,54 @@
 <heading>connect - Connect to an existing box.</heading>
+
 <rule/>
-<heading level="2">Usage</heading>
-<pre>connect NAME
+
+<heading level="2">
+Usage
+</heading>
+
+<pre>
+connect NAME
 connect NAME --direction north
 connect NAME --world NLP
-connect NAME --direction east --oneway</pre>
-<heading level="2">Description</heading>
-<paragraph>Creates a connection from the current box to an existing box. Unlike dig, connect does not create a new box. A connection is bidirectional by default; use --oneway to make it traversable in one direction only.</paragraph>
-<paragraph>The direction is the orientation at the current box, given as a compass word or an angle in degrees (0° = east, counterclockwise).</paragraph>
-<heading level="2">Examples</heading>
-<pre>connect Kitchen
+connect NAME --direction east --oneway
+</pre>
+
+<heading level="2">
+Description
+</heading>
+
+<paragraph>
+Creates a connection from the current box to an existing box. Unlike dig,
+connect does not create a new box. A connection is bidirectional by
+default; use --oneway to make it traversable in one direction only.
+</paragraph>
+
+<paragraph>
+The direction is the orientation at the current box, given as a compass
+word or an angle in degrees (0° = the room's own east, counterclockwise).
+Angles are relative to the room you stand in, never absolute compass
+directions. The other side of the connection is its opposite angle.
+</paragraph>
+
+<heading level="2">
+Examples
+</heading>
+
+<pre>
+connect Kitchen
   Connect to an existing box called Kitchen.
+
 connect Office --direction east
   Connect with the endpoint on the east side.
+
 connect Wardrobe --world NLP
-  Connect into a box of the NLP world.</pre>
-<heading level="2">See also</heading>
-<paragraph>dig, enter, go, leave, look, refine split</paragraph>
+  Connect into a box of the NLP world.
+</pre>
+
+<heading level="2">
+See also
+</heading>
+
+<paragraph>
+dig, enter, go, leave, look, refine split
+</paragraph>

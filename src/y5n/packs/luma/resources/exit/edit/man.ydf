@@ -17,8 +17,9 @@ Description
 </heading>
 
 <paragraph>
-Updates the name, description or direction of an existing
-exit.
+Updates the name, description or orientation (--direction)
+of an existing exit. The orientation is an angle relative to
+the room's own frame, given as a compass word or degrees.
 </paragraph>
 
 <paragraph>
@@ -34,8 +35,8 @@ Examples
 edit Door --world Work --box Office --new-name Window
   Rename an exit.
 
-edit Door --world Work --box Office --direction south
-  Change the direction.
+edit Door --world Work --box Office --direction 90
+  Move the exit to 90° in the room's frame.
 
 exit/edit Passage --world Research --box Lab --new-name Tunnel
   From another space, qualify the path.

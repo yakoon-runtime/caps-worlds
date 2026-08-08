@@ -20,7 +20,7 @@ Luma explores a simple question:
 > **What if knowledge were stored the same way we naturally remember it?**
 
 Instead of folders, Luma offers *worlds*. Instead of documents, *boxes*.
-Instead of hyperlinks, *exits*. Instead of attaching notes to objects,
+Instead of hyperlinks, *connections*. Instead of attaching notes to objects,
 notes exist independently and become meaningful only when *placed*
 somewhere.
 
@@ -48,6 +48,13 @@ navigable by default. An **Endpoint** is the local view of a connection as
 seen from one box: its own name, description and orientation. The same
 connection looks different from each side — a *red door* from one room, a
 *locked hall entrance* from the other.
+
+Every room owns its own local coordinate system. Orientations are
+expressed as angles within that local system (0° = the room's own east,
+counterclockwise) — never as global compass directions. From the entrance
+a door lies at 90°; from the other room the same connection points back at
+270° (the opposite angle). You never need to know where north is, only
+where *you* are standing.
 
 Worlds are not isolated. A connection may lead from a box in one world into
 a box of another world — a wardrobe that opens into a different knowledge

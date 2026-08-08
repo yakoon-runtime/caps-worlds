@@ -15,8 +15,9 @@ Description
 </heading>
 
 <paragraph>
-Displays details of an exit: name, source box, target box,
-direction and description.
+Displays details of an exit: its name, orientation (angle from
+the room's own frame), the box it leads to, whether the
+connection is one-way, and its description.
 </paragraph>
 
 <heading level="2">
