@@ -5,6 +5,7 @@ from y5n.runtime.store.event.wire import build_store as build_event_store
 from y5n.runtime.store.sequence.wire import build_store as build_sequencer
 from y5n.sdk import ports
 
+from .bootstrap import bootstrap
 from .services import (
     BoxService,
     ConnectionService,
@@ -86,6 +87,8 @@ async def main():
         on_next_id=sequencer.next_id,
     )
     refine = RefineService(boxes=boxes, connections=connections, endpoints=endpoints)
+
+    await bootstrap(worlds=worlds, boxes=boxes)
 
     ports.publish("luma.world.service", worlds)
     ports.publish("luma.box.service", boxes)
