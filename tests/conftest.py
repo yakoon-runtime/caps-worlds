@@ -47,5 +47,10 @@ def exits():
 
 
 @pytest.fixture
+def refine():
+    return _get("luma.refine.service")
+
+
+@pytest.fixture
 def notes():
     return _get("luma.note.service")

@@ -12,6 +12,7 @@ from .namespaces import (
     world_namespace,
 )
 from .note import NoteService
+from .refine import RefineService
 from .world import WorldService
 
 __all__ = [
@@ -19,6 +20,7 @@ __all__ = [
     "Directions",
     "ExitService",
     "NoteService",
+    "RefineService",
     "WorldService",
     "box_key",
     "box_namespace",

@@ -1,0 +1,25 @@
+<heading>refine split - Split the current room along a line.</heading>
+<rule/>
+
+<heading level="2">Usage</heading>
+<pre>refine split ANGLE
+refine split ANGLE --offset OFFSET</pre>
+
+<heading level="2">Description</heading>
+<paragraph>Refines the current room into two rooms. The split is a graph transformation: a second room is created and all exits are rewired automatically. Neither boxes nor exits are changed — only their connections.</paragraph>
+<paragraph>The angle is measured in the mathematical convention: 0° is east, angles count counterclockwise. The line always passes through the room's center. The optional offset (between -1 and 1, default 0) shifts the line along its normal: 0 is the center, ±1 puts the line on the edge.</paragraph>
+<paragraph>Exits are classified by the side of the line they lie on. An exit whose side midpoint lies exactly on the line stays with the original room.</paragraph>
+
+<heading level="2">Examples</heading>
+<pre>refine split 90
+  Split into an upper and a lower room.
+refine split 0
+  Split into a left and a right room.
+refine split 45
+  Split diagonally (north-east half becomes the new room).
+refine split 0 --offset 0.8
+  Split off a narrow strip on the east side.</pre>
+
+<heading level="2">See also</heading>
+
+<paragraph>dig, connect, box/edit, look</paragraph>

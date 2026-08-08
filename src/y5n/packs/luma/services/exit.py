@@ -111,5 +111,55 @@ class ExitService:
             direction=direction,
         )
 
+    async def update_exit(
+        self,
+        *,
+        exit_id: str,
+        source_box_id: str | None = None,
+        target_box_id: str | None = None,
+        target_world_id: str | None = None,
+        name: str | None = None,
+        description: str | None = None,
+        direction: str | None = None,
+    ) -> Exit:
+        """Update fields of an existing exit, preserving its id."""
+        e = await self.get_exit(exit_id)
+        if e is None:
+            raise ValueError(f"Exit '{exit_id}' not found.")
+        if name is not None and name.lower() != e.name.lower():
+            for other in await self._all_exits():
+                if (
+                    other.id != exit_id
+                    and other.source_box_id == e.source_box_id
+                    and other.name.lower() == name.lower()
+                ):
+                    raise ValueError(f"Exit '{name}' already exists from this box.")
+        data = ExitData(
+            world_id=e.world_id,
+            source_box_id=(
+                source_box_id if source_box_id is not None else e.source_box_id
+            ),
+            target_box_id=(
+                target_box_id if target_box_id is not None else e.target_box_id
+            ),
+            target_world_id=(
+                target_world_id if target_world_id is not None else e.target_world_id
+            ),
+            name=name if name is not None else e.name,
+            description=description if description is not None else e.description,
+            direction=direction if direction is not None else e.direction,
+        )
+        await self._on_replace(key=exit_key(exit_id), doc=data.to_dict())
+        return Exit(
+            id=exit_id,
+            world_id=e.world_id,
+            source_box_id=data.source_box_id,
+            target_box_id=data.target_box_id,
+            target_world_id=data.target_world_id,
+            name=data.name,
+            description=data.description,
+            direction=data.direction,
+        )
+
     async def disconnect(self, exit_id: str) -> None:
         await self._on_delete(key=exit_key(exit_id))

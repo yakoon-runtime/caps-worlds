@@ -9,6 +9,7 @@ from .services import (
     BoxService,
     ExitService,
     NoteService,
+    RefineService,
     WorldService,
     box_namespace,
     exit_namespace,
@@ -68,8 +69,10 @@ async def main():
         on_delete=store.objects.delete,
         on_next_id=sequencer.next_id,
     )
+    refine = RefineService(boxes=boxes, exits=exits)
 
     ports.publish("luma.world.service", worlds)
     ports.publish("luma.box.service", boxes)
     ports.publish("luma.exit.service", exits)
     ports.publish("luma.note.service", notes)
+    ports.publish("luma.refine.service", refine)
