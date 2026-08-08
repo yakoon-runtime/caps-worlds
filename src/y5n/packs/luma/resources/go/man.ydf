@@ -5,15 +5,14 @@
 go NAME
 go ..</pre>
 <heading level="2">Description</heading>
-<paragraph>Moves to a connected box via an exit or to a child box.</paragraph>
-<paragraph>Use go .. to move back to the parent box.</paragraph>
-<paragraph>Following an exit that leads into another world moves you into that world.</paragraph>
+<paragraph>Moves to a connected box via an exit or to a child box. The target is matched by endpoint name first, then by orientation (compass word or angle).</paragraph>
+<paragraph>Use go .. to move back to the parent box. Following a connection that leads into another world moves you into that world.</paragraph>
 <heading level="2">Examples</heading>
 <pre>go north
-  Follow an exit leading north.
+  Follow an endpoint leading north.
 go Kitchen
-  Move to a box or exit called Kitchen.
+  Move to a box or endpoint called Kitchen.
 go ..
   Move back to the parent box.</pre>
 <heading level="2">See also</heading>
-<paragraph>dig, enter, leave, look</paragraph>
+<paragraph>dig, enter, leave, look, refine split</paragraph>

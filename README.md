@@ -29,7 +29,7 @@ somewhere.
 ```
 World
  ├── Box (Office)
- │    ├── Exit ───────► Box (Kitchen)
+ │    ├── Endpoint "Door" ── Connection ──► Endpoint "Door" ── Box (Kitchen)
  │    ├── Box (Desk)
  │    │      └── Box (Drawer)
  │    │             └── Box (Envelope)
@@ -42,10 +42,17 @@ World
 **Everything has a place.**  
 **Ideas exist before places.**
 
-Worlds are not isolated. An *exit* may lead from a box in one world into a
-box of another world — a wardrobe that opens into a different knowledge
-area. Moving through such an exit switches the current world; the world you
-leave stays where it was, connected and reachable again.
+A room is modeled in three parts. A **Box** is a place. A **Connection**
+is a topological link between two boxes — the path itself, bidirectionally
+navigable by default. An **Endpoint** is the local view of a connection as
+seen from one box: its own name, description and orientation. The same
+connection looks different from each side — a *red door* from one room, a
+*locked hall entrance* from the other.
+
+Worlds are not isolated. A connection may lead from a box in one world into
+a box of another world — a wardrobe that opens into a different knowledge
+area. Moving through it switches the current world; the world you leave
+stays where it was, connected and reachable again.
 
 ## A Walkthrough
 

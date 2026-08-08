@@ -64,40 +64,70 @@ class BoxData:
 
 
 @dataclass
-class ExitData:
+class EndpointData:
     CURRENT_VERSION = 1
-    world_id: str
-    source_box_id: str
-    target_box_id: str
-    target_world_id: str | None = None
+    box_id: str
+    connection_id: str
     name: str = ""
     description: str = ""
-    direction: str = ""
+    orientation: float | None = None
+    _v: int = field(default=CURRENT_VERSION)
+
+    def to_dict(self) -> dict:
+        return {
+            "box_id": self.box_id,
+            "connection_id": self.connection_id,
+            "name": self.name,
+            "description": self.description,
+            "orientation": self.orientation,
+            "_v": self._v,
+        }
+
+    @classmethod
+    def from_dict(cls, d: dict) -> EndpointData:
+        d = dict(d or {})
+        return cls(
+            box_id=d["box_id"],
+            connection_id=d["connection_id"],
+            name=d.get("name", ""),
+            description=d.get("description", ""),
+            orientation=d.get("orientation"),
+            _v=d.get("_v", 0),
+        )
+
+
+@dataclass
+class ConnectionData:
+    CURRENT_VERSION = 1
+    world_id: str
+    endpoint_a_id: str
+    endpoint_b_id: str
+    bidirectional: bool = True
+    description: str = ""
+    kind: str = "path"
     _v: int = field(default=CURRENT_VERSION)
 
     def to_dict(self) -> dict:
         return {
             "world_id": self.world_id,
-            "source_box_id": self.source_box_id,
-            "target_box_id": self.target_box_id,
-            "target_world_id": self.target_world_id,
-            "name": self.name,
+            "endpoint_a_id": self.endpoint_a_id,
+            "endpoint_b_id": self.endpoint_b_id,
+            "bidirectional": self.bidirectional,
             "description": self.description,
-            "direction": self.direction,
+            "kind": self.kind,
             "_v": self._v,
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> ExitData:
+    def from_dict(cls, d: dict) -> ConnectionData:
         d = dict(d or {})
         return cls(
             world_id=d["world_id"],
-            source_box_id=d["source_box_id"],
-            target_box_id=d["target_box_id"],
-            target_world_id=d.get("target_world_id"),
-            name=d.get("name", ""),
+            endpoint_a_id=d["endpoint_a_id"],
+            endpoint_b_id=d["endpoint_b_id"],
+            bidirectional=d.get("bidirectional", True),
             description=d.get("description", ""),
-            direction=d.get("direction", ""),
+            kind=d.get("kind", "path"),
             _v=d.get("_v", 0),
         )
 

@@ -1,15 +1,6 @@
 from y5n.sdk import context, io, ports, session
 
-_OPPOSITE = {
-    "north": "south",
-    "south": "north",
-    "east": "west",
-    "west": "east",
-    "up": "down",
-    "down": "up",
-    "in": "out",
-    "out": "in",
-}
+from ..models import Orientation
 
 
 async def main():
@@ -23,7 +14,7 @@ async def main():
     target_ref = context.request().arg(0)
     direction = context.request().option("direction") or ""
     via = context.request().option("via") or target_ref
-    twoway = context.request().has_option("twoway")
+    oneway = context.request().has_option("oneway")
     world_ref = context.request().option("world")
 
     if not target_ref:
@@ -40,8 +31,6 @@ async def main():
         target_world = world.id
 
     boxes = ports.get("luma.box.service")
-    exits = ports.get("luma.exit.service")
-
     existing = await boxes.list_boxes(world_id=target_world, parent_id=None)
     target = next((b for b in existing if b.name.lower() == target_ref.lower()), None)
 
@@ -53,27 +42,16 @@ async def main():
             description="",
         )
 
-    await exits.connect(
+    connections = ports.get("luma.connection.service")
+    orientation = Orientation.from_notation(direction)
+
+    await connections.connect(
         world_id=current_world,
-        source_box_id=current_box,
-        target_box_id=target.id,
-        target_world_id=target_world,
-        name=via,
-        direction=direction,
+        box_a_id=current_box,
+        box_b_id=target.id,
+        name_a=via,
+        orientation_a=orientation,
+        bidirectional=not oneway,
     )
 
-    lines = [f"Connected to '{target.name}' via '{via}'."]
-
-    if twoway:
-        rev_dir = _OPPOSITE.get(direction.lower()) if direction else ""
-        await exits.connect(
-            world_id=target_world,
-            source_box_id=target.id,
-            target_box_id=current_box,
-            target_world_id=current_world,
-            name=via,
-            direction=rev_dir,
-        )
-        lines.append("  Reverse exit created.")
-
-    await io.write("\n".join(lines))
+    await io.write(f"Connected to '{target.name}' via '{via}'.")

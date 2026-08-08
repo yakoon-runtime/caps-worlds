@@ -7,12 +7,14 @@ from y5n.sdk import ports
 
 from .services import (
     BoxService,
-    ExitService,
+    ConnectionService,
+    EndpointService,
     NoteService,
     RefineService,
     WorldService,
     box_namespace,
-    exit_namespace,
+    connection_namespace,
+    endpoint_namespace,
     note_namespace,
     world_namespace,
 )
@@ -27,7 +29,13 @@ async def main():
 
     INDEX_ALL = IndexSpec(key=IndexKey("all"), value_type=ValueType.TEXT, unique=False)
 
-    for ns in [world_namespace(), box_namespace(), exit_namespace(), note_namespace()]:
+    for ns in [
+        world_namespace(),
+        box_namespace(),
+        endpoint_namespace(),
+        connection_namespace(),
+        note_namespace(),
+    ]:
         await store.objects.ensure_indexes(namespace=ns, specs=[INDEX_ALL])
 
     async def _scan(namespace):
@@ -55,7 +63,15 @@ async def main():
         on_delete=store.objects.delete,
         on_next_id=sequencer.next_id,
     )
-    exits = ExitService(
+    endpoints = EndpointService(
+        on_get=store.objects.get,
+        on_replace=_replace,
+        on_scan=_scan,
+        on_delete=store.objects.delete,
+        on_next_id=sequencer.next_id,
+    )
+    connections = ConnectionService(
+        endpoints=endpoints,
         on_get=store.objects.get,
         on_replace=_replace,
         on_scan=_scan,
@@ -69,10 +85,11 @@ async def main():
         on_delete=store.objects.delete,
         on_next_id=sequencer.next_id,
     )
-    refine = RefineService(boxes=boxes, exits=exits)
+    refine = RefineService(boxes=boxes, connections=connections, endpoints=endpoints)
 
     ports.publish("luma.world.service", worlds)
     ports.publish("luma.box.service", boxes)
-    ports.publish("luma.exit.service", exits)
+    ports.publish("luma.endpoint.service", endpoints)
+    ports.publish("luma.connection.service", connections)
     ports.publish("luma.note.service", notes)
     ports.publish("luma.refine.service", refine)

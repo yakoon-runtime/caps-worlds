@@ -1,5 +1,7 @@
 from y5n.sdk import context, io, ports
 
+from ...models import Orientation
+
 
 async def main():
     exit_name = context.request().arg(0)
@@ -25,24 +27,26 @@ async def main():
         await io.write(f"Box '{box_ref}' not found.")
         return
 
-    exits = ports.get("luma.exit.service")
-    from_src = await exits.find_from(box_id=src.id)
-    e = next((ex for ex in from_src if ex.name.lower() == exit_name.lower()), None)
-    if e is None:
+    endpoints = ports.get("luma.endpoint.service")
+    from_src = await endpoints.for_box(box_id=src.id)
+    ep = next((e for e in from_src if e.name.lower() == exit_name.lower()), None)
+    if ep is None:
         await io.write(f"Exit '{exit_name}' not found in '{box_ref}'.")
         return
 
-    final_name = new_name if new_name is not None else e.name
-    final_desc = description if description is not None else e.description
-    final_dir = direction if direction is not None else e.direction
+    final_name = new_name if new_name is not None else ep.name
+    final_desc = description if description is not None else ep.description
+    final_orientation = (
+        Orientation.from_notation(direction) if direction is not None else None
+    )
+    final_orientation = (
+        final_orientation if final_orientation is not None else ep.orientation
+    )
 
-    await exits.disconnect(exit_id=e.id)
-    await exits.connect(
-        world_id=e.world_id,
-        source_box_id=e.source_box_id,
-        target_box_id=e.target_box_id,
+    await endpoints.update(
+        endpoint_id=ep.id,
         name=final_name,
         description=final_desc,
-        direction=final_dir,
+        orientation=final_orientation,
     )
     await io.write(f"Exit '{exit_name}' updated.")

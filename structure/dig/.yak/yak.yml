@@ -13,7 +13,7 @@ invocation:
   - key: direction
   - key: via
   - key: world
-  - key: twoway
+  - key: oneway
     kind: flag
 resources:
   ref: resource:y5n.packs.luma.resources.loader:content

@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import Any
 
 import pytest
-from y5n.runtime.api.naming import Key
 
 _services: dict[str, Any] = {}
 
@@ -42,8 +40,13 @@ def boxes():
 
 
 @pytest.fixture
-def exits():
-    return _get("luma.exit.service")
+def endpoints():
+    return _get("luma.endpoint.service")
+
+
+@pytest.fixture
+def connections():
+    return _get("luma.connection.service")
 
 
 @pytest.fixture

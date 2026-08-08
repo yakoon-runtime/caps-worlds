@@ -1,11 +1,13 @@
 from .box import BoxService
-from .directions import Directions
-from .exit import ExitService
+from .connection import ConnectionService
+from .endpoint import EndpointService
 from .namespaces import (
     box_key,
     box_namespace,
-    exit_key,
-    exit_namespace,
+    connection_key,
+    connection_namespace,
+    endpoint_key,
+    endpoint_namespace,
     note_key,
     note_namespace,
     world_key,
@@ -17,15 +19,17 @@ from .world import WorldService
 
 __all__ = [
     "BoxService",
-    "Directions",
-    "ExitService",
+    "ConnectionService",
+    "EndpointService",
     "NoteService",
     "RefineService",
     "WorldService",
     "box_key",
     "box_namespace",
-    "exit_key",
-    "exit_namespace",
+    "connection_key",
+    "connection_namespace",
+    "endpoint_key",
+    "endpoint_namespace",
     "note_key",
     "note_namespace",
     "world_key",

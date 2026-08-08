@@ -22,28 +22,34 @@ async def main():
         await io.write(f"Box '{box_ref}' not found.")
         return
 
-    exits = ports.get("luma.exit.service")
-    from_src = await exits.find_from(box_id=src.id)
-    e = next((ex for ex in from_src if ex.name.lower() == exit_name.lower()), None)
-    if e is None:
+    endpoints = ports.get("luma.endpoint.service")
+    from_src = await endpoints.for_box(box_id=src.id)
+    ep = next((e for e in from_src if e.name.lower() == exit_name.lower()), None)
+    if ep is None:
         await io.write(f"Exit '{exit_name}' not found in '{box_ref}'.")
         return
 
-    target = await boxes.get_box(box_id=e.target_box_id)
-    tgt_name = target.name if target else f"#{e.target_box_id}"
+    connections = ports.get("luma.connection.service")
+    connection = await connections.get(ep.connection_id)
+    other = await connections.other_endpoint(connection, src.id) if connection else None
+    target = await boxes.get_box(box_id=other.box_id) if other else None
+    tgt_name = target.name if target else f"#{other.box_id if other else '?'}"
 
     lines = [
-        f"Exit '{e.name}'",
-        f"  From: {box_ref} (#{e.source_box_id})",
-        f"  To:   {tgt_name} (#{e.target_box_id})",
+        f"Exit '{ep.name}'",
+        f"  From: {box_ref} (#{ep.box_id})",
+        f"  To:   {tgt_name}",
     ]
-    if e.target_world_id and e.target_world_id != e.world_id:
-        worlds = ports.get("luma.world.service")
-        world = await worlds.get_world(world_id=e.target_world_id)
-        world_name = world.name if world else f"world {e.target_world_id}"
+    if target and target.world_id != world_id:
+        world = await worlds.get_world(world_id=target.world_id)
+        world_name = world.name if world else f"world {target.world_id}"
         lines.append(f"  World: {world_name}")
-    if e.direction:
-        lines.append(f"  Direction: {e.direction}")
-    if e.description:
-        lines.append(f"  Description: {e.description}")
+    if ep.orientation is not None:
+        lines.append(f"  Direction: {ep.orientation.word()}")
+    if connection is not None and not connection.bidirectional:
+        lines.append("  One-way")
+    if connection is not None and connection.kind != "path":
+        lines.append(f"  Kind: {connection.kind}")
+    if ep.description:
+        lines.append(f"  Description: {ep.description}")
     await io.write("\n".join(lines))

@@ -3,18 +3,17 @@
 <heading level="2">Usage</heading>
 <pre>connect NAME
 connect NAME --direction north
-connect NAME --direction east --twoway
-connect NAME --world NLP</pre>
+connect NAME --world NLP
+connect NAME --direction east --oneway</pre>
 <heading level="2">Description</heading>
-<paragraph>Creates an exit from the current box to an existing box. By default the target is looked up in the current world; use --world to connect to a box in another world.</paragraph>
+<paragraph>Creates a connection from the current box to an existing box. Unlike dig, connect does not create a new box. A connection is bidirectional by default; use --oneway to make it traversable in one direction only.</paragraph>
+<paragraph>The direction is the orientation at the current box, given as a compass word or an angle in degrees (0° = east, counterclockwise).</paragraph>
 <heading level="2">Examples</heading>
 <pre>connect Kitchen
   Connect to an existing box called Kitchen.
 connect Office --direction east
-  Connect with a directional label.
-connect Basement --direction down --twoway
-  Create a two-way connection.
+  Connect with the endpoint on the east side.
 connect Wardrobe --world NLP
   Connect into a box of the NLP world.</pre>
 <heading level="2">See also</heading>
-<paragraph>dig, enter, go, leave, look</paragraph>
+<paragraph>dig, enter, go, leave, look, refine split</paragraph>

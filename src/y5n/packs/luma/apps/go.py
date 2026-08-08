@@ -1,5 +1,7 @@
 from y5n.sdk import context, io, ports, session
 
+from ..models import Orientation, angle_difference
+
 
 async def main():
     ses = await session.current()
@@ -37,32 +39,53 @@ async def main():
         await io.write(f"{child.name}")
         return
 
-    exits = ports.get("luma.exit.service")
-    from_here = await exits.find_from(box_id=current_box)
+    endpoints = ports.get("luma.endpoint.service")
+    connections = ports.get("luma.connection.service")
+    from_here = await endpoints.for_box(box_id=current_box)
 
     by_name = [e for e in from_here if e.name.lower() == ref.lower()]
     if len(by_name) == 1:
-        e = by_name[0]
+        endpoint = by_name[0]
     elif len(by_name) > 1:
         await io.write(f"Multiple exits named '{ref}' from here.")
         return
     else:
-        by_dir = [e for e in from_here if e.direction.lower() == ref.lower()]
-        if len(by_dir) == 0:
+        wanted = Orientation.from_notation(ref)
+        placed = [e for e in from_here if e.orientation is not None]
+        if wanted is None or not placed:
             await io.write(f"Nothing leads '{ref}' from here.")
             return
-        if len(by_dir) > 1:
-            names = ", ".join(e.name or e.direction for e in by_dir)
+        nearest = min(
+            placed,
+            key=lambda e: angle_difference(e.orientation.angle, wanted.angle),
+        )
+        best_diff = angle_difference(nearest.orientation.angle, wanted.angle)
+        close = [
+            e
+            for e in placed
+            if angle_difference(e.orientation.angle, wanted.angle) <= best_diff + 1e-9
+        ]
+        if len(close) > 1:
+            names = ", ".join(e.name or "?" for e in close)
             await io.write(f"Multiple exits lead '{ref}': {names}. Use a name.")
             return
-        e = by_dir[0]
+        endpoint = nearest
 
-    target = await boxes.get_box(box_id=e.target_box_id)
-    if target is None:
-        await io.write(f"Exit leads nowhere (box #{e.target_box_id} missing).")
+    connection = await connections.get(endpoint.connection_id)
+    if connection is None:
+        await io.write("Exit leads nowhere (connection missing).")
+        return
+    other = await connections.other_endpoint(connection, current_box)
+    if other is None:
+        await io.write("Exit leads nowhere (connection incomplete).")
         return
 
-    target_world = e.target_world_id or current_world
+    target = await boxes.get_box(box_id=other.box_id)
+    if target is None:
+        await io.write(f"Exit leads nowhere (box #{other.box_id} missing).")
+        return
+
+    target_world = target.world_id or current_world
     patch = {"luma.current_box": target.id}
     if target_world != current_world:
         patch["luma.current_world"] = target_world

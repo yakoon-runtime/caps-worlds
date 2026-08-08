@@ -3,17 +3,16 @@
 <heading level="2">Usage</heading>
 <pre>dig NAME
 dig NAME --direction north
-dig NAME --direction east --twoway
+dig NAME --direction east --oneway
 dig NAME --world NLP</pre>
 <heading level="2">Description</heading>
-<paragraph>Creates a new box and connects it to the current box via an exit. If a box with the given name already exists, only the exit is created. The box is created in the current world by default; use --world to create (or find) it in another world.</paragraph>
+<paragraph>Creates a new box and connects it to the current box. If a box with the given name already exists, only the connection is created. The box is created in the current world by default; use --world to create (or find) it in another world.</paragraph>
+<paragraph>The direction is the orientation at the current box, given as a compass word or an angle in degrees (0° = east, counterclockwise). Connections are bidirectional by default; use --oneway to make one directional.</paragraph>
 <heading level="2">Examples</heading>
 <pre>dig Garden
   Create a box and connect to it.
 dig Office --direction east
-  Create a box with a directional exit.
-dig Basement --direction down --twoway
-  Create a two-way connection.
+  Create a box with its endpoint on the east side.
 dig Portals --world NLP
   Create a box in the NLP world and connect to it.</pre>
 <heading level="2">See also</heading>

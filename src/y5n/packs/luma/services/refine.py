@@ -1,34 +1,21 @@
 """Graph refactoring: split a box along a line.
 
-A split is a pure graph transformation. Boxes and exits are unchanged;
-only the box references of affected exits are rewired.
-
-The geometry is purely logical. A line through the box's center is
-described by its angle (math convention: 0° = +x = east, counterclockwise)
-and a normalized offset (-1 ≤ offset ≤ 1, where 0 is the center and ±1
-puts the line on the edge). Exits carry an implicit position on their
-source side; the line classifies each exit into the new or the old room.
-
-Exits whose side midpoint lies exactly on the line stay with the old
-room — deterministic, no user interaction.
+A split is a pure graph transformation. The line (angle + normalized
+offset) classifies each endpoint of the box by its orientation; endpoints
+on one side are reassigned to the new box. Connections stay untouched —
+they only reference endpoint ids.
 """
 
 from __future__ import annotations
 
 import math
 
+from ..models import Orientation
 from .box import BoxService
-from .directions import Directions
-from .exit import ExitService
+from .connection import ConnectionService
+from .endpoint import EndpointService
 
-# Exit direction -> position on the unit circle (0° = east, CCW).
-EXIT_ANGLES = {
-    "east": 0.0,
-    "north": 90.0,
-    "west": 180.0,
-    "south": 270.0,
-}
-
+# Geometry lives here; boxes and endpoints are only re-pointed.
 _EPS = 1e-9
 
 
@@ -56,17 +43,21 @@ def _nearest_cardinal(nx: float, ny: float) -> str:
     return "north" if ny >= 0 else "south"
 
 
-def _belongs_to_new(direction: str, angle_deg: float, offset: float) -> bool:
-    exit_angle = EXIT_ANGLES.get(direction.lower())
-    if exit_angle is None:
-        return False
-    return _side(exit_angle, angle_deg, offset) > _EPS
+def belongs_to_new(angle_deg: float, split_angle_deg: float, offset: float) -> bool:
+    """True if an orientation at *angle_deg* lies on the new side of the line."""
+    return _side(angle_deg, split_angle_deg, offset) > _EPS
 
 
 class RefineService:
-    def __init__(self, boxes: BoxService, exits: ExitService):
+    def __init__(
+        self,
+        boxes: BoxService,
+        connections: ConnectionService,
+        endpoints: EndpointService,
+    ):
         self._boxes = boxes
-        self._exits = exits
+        self._connections = connections
+        self._endpoints = endpoints
 
     async def split(
         self,
@@ -78,8 +69,8 @@ class RefineService:
     ) -> dict:
         """Split *box_id* along a line through its center.
 
-        Creates a second box, connects both halves, and rewires every
-        exit that touches the original box. Returns a summary dict.
+        Creates a second box, connects both halves, and reassigns every
+        endpoint of the original box by its orientation. Returns a summary.
         """
         box = await self._boxes.get_box(box_id=box_id)
         if box is None:
@@ -95,60 +86,26 @@ class RefineService:
 
         nx, ny = _normal(angle_deg)
         fwd = _nearest_cardinal(nx, ny)
-        rev = Directions.opposite(fwd) or fwd
-
-        fwd_name = await self._next_exit_name(box.id, f"to {new_box.name}")
-        rev_name = await self._next_exit_name(new_box.id, f"to {box.name}")
-        await self._exits.connect(
+        rev = _opposite(fwd)
+        connection = await self._connections.connect(
             world_id=world_id,
-            source_box_id=box.id,
-            target_box_id=new_box.id,
-            name=fwd_name,
-            direction=fwd,
-        )
-        await self._exits.connect(
-            world_id=world_id,
-            source_box_id=new_box.id,
-            target_box_id=box.id,
-            name=rev_name,
-            direction=rev,
+            box_a_id=box.id,
+            box_b_id=new_box.id,
+            name_a=fwd,
+            orientation_a=Orientation.from_notation(fwd),
+            name_b=rev,
+            orientation_b=Orientation.from_notation(rev),
         )
 
-        outgoing = [
-            e
-            for e in await self._exits.find_from(box_id=box.id)
-            if e.target_box_id != new_box.id
-        ]
-        incoming = [
-            e
-            for e in await self._exits.find_to(box_id=box.id)
-            if e.source_box_id != new_box.id
-        ]
-
-        by_source: dict[str, list] = {}
-        for e in incoming:
-            by_source.setdefault(e.source_box_id, []).append(e)
-
-        used: set[str] = set()
         moved = 0
-        for e in outgoing:
-            assigned = (
-                new_box.id
-                if _belongs_to_new(e.direction, angle_deg, offset)
-                else box.id
-            )
-            if assigned == new_box.id:
+        for endpoint in await self._endpoints.for_box(box_id=box.id):
+            if endpoint.connection_id == connection.id:
+                continue
+            if endpoint.orientation is None:
+                continue
+            if belongs_to_new(endpoint.orientation.angle, angle_deg, offset):
+                await self._endpoints.update(endpoint_id=endpoint.id, box_id=new_box.id)
                 moved += 1
-            await self._exits.update_exit(exit_id=e.id, source_box_id=assigned)
-
-            for pair in by_source.get(e.target_box_id, []):
-                if pair.id in used:
-                    continue
-                if pair.name.lower() != e.name.lower():
-                    continue
-                await self._exits.update_exit(exit_id=pair.id, target_box_id=assigned)
-                used.add(pair.id)
-                break
 
         return {
             "box": box,
@@ -166,13 +123,12 @@ class RefineService:
             n += 1
         return candidate
 
-    async def _next_exit_name(self, source_box_id: str, base: str) -> str:
-        taken = {
-            e.name.lower() for e in await self._exits.find_from(box_id=source_box_id)
-        }
-        candidate = base
-        n = 2
-        while candidate.lower() in taken:
-            candidate = f"{base} {n}"
-            n += 1
-        return candidate
+
+def _opposite(direction: str) -> str:
+    pairs = {
+        "north": "south",
+        "south": "north",
+        "east": "west",
+        "west": "east",
+    }
+    return pairs.get(direction, "")
