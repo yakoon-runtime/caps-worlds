@@ -18,15 +18,59 @@ def _get(name: str) -> Any:
 @pytest.fixture(autouse=True)
 def _patch_ports(monkeypatch):
     _services.clear()
+    import asyncio
+    import os
+
+    os.environ.setdefault("YAK_ENDPOINT", "inprocess://")
+
+    from y5n.runtime.api.runtime.bus import _make_default_bus
+    from y5n.runtime.api.runtime.bus import get_bus as _get_bus
+    from y5n.runtime.api.runtime.bus import set_bus as _set_bus
+    from y5n.runtime.engine.wire.adapter.store import StoreAdapter
+    from y5n.runtime.store.event.backends.memory import MemoryBackend
+    from y5n.runtime.store.event.store import create_entity_store
+    from y5n.runtime.store.sequence.allocator import ShardAllocator
+    from y5n.runtime.store.sequence.backends.memory import MemoryShardRepository
+    from y5n.runtime.store.sequence.runtime import Sequencer
+
+    # Wire a real store behind the SDK `store` port so pack setup can use
+    # sdk.store() (ADR-17: the runtime owns the store).
+    previous_bus = _get_bus()
+    bus = _make_default_bus()
+    _set_bus(bus)
+
+    store = create_entity_store(MemoryBackend())
+    sequencer = Sequencer(ShardAllocator(MemoryShardRepository()))
+
+    bus.resolver.register(
+        "system:store",
+        {
+            "store": [
+                "get",
+                "get_many",
+                "append",
+                "replace",
+                "record",
+                "delete",
+                "scan",
+                "ensure_indexes",
+                "query_index",
+                "next_id",
+            ]
+        },
+        path="/",
+    )
+    bus.transport.register_adapter("store", StoreAdapter(store, sequencer))
+
     import y5n.packs.luma.setup as luma_setup
     import y5n.sdk.ports as sdk_ports
 
     monkeypatch.setattr(sdk_ports, "publish", _publish)
     monkeypatch.setattr(sdk_ports, "get", _get)
-    import asyncio
 
     asyncio.run(luma_setup.main())
     yield
+    _set_bus(previous_bus)
 
 
 @pytest.fixture
