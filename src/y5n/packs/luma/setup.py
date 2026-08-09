@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from y5n.runtime.store.event.models import IndexKey, IndexSpec, IndexTerm, ValueType
 from y5n.sdk import ports
-from y5n.sdk.store_client import StoreClient
+from y5n.sdk.store import StoreClient
 
 from .bootstrap import bootstrap
 from .services import (
