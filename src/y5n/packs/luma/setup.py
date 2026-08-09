@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from y5n.runtime.store.event.models import IndexKey, IndexSpec, IndexTerm, ValueType
-from y5n.sdk import ports
-from y5n.sdk import store as store_factory
+from y5n.sdk import ports, store
 
 from .bootstrap import bootstrap
 from .services import (
@@ -22,7 +21,7 @@ from .services import (
 
 async def main():
 
-    store = store_factory()
+    db = store()
 
     INDEX_ALL = IndexSpec(key=IndexKey("all"), value_type=ValueType.TEXT, unique=False)
 
@@ -33,52 +32,50 @@ async def main():
         connection_namespace(),
         note_namespace(),
     ]:
-        await store.ensure_indexes(namespace=ns, specs=[INDEX_ALL])
+        await db.ensure_indexes(namespace=ns, specs=[INDEX_ALL])
 
     async def _scan(namespace):
-        return await store.scan(
-            namespace=namespace, index_key=IndexKey("all"), value="1"
-        )
+        return await db.scan(namespace=namespace, index_key=IndexKey("all"), value="1")
 
     async def _replace(*, key, doc, indexes=(), snapshot_hint=None, expected_rev=None):
         idx = list(indexes) + [IndexTerm(key=IndexKey("all"), value="1")]
-        return await store.replace(key=key, doc=doc, indexes=idx)
+        return await db.replace(key=key, doc=doc, indexes=idx)
 
     worlds = WorldService(
-        on_get=store.get,
+        on_get=db.get,
         on_replace=_replace,
         on_scan=_scan,
-        on_delete=store.delete,
-        on_next_id=store.next_id,
+        on_delete=db.delete,
+        on_next_id=db.next_id,
     )
     boxes = BoxService(
-        on_get=store.get,
+        on_get=db.get,
         on_replace=_replace,
         on_scan=_scan,
-        on_delete=store.delete,
-        on_next_id=store.next_id,
+        on_delete=db.delete,
+        on_next_id=db.next_id,
     )
     endpoints = EndpointService(
-        on_get=store.get,
+        on_get=db.get,
         on_replace=_replace,
         on_scan=_scan,
-        on_delete=store.delete,
-        on_next_id=store.next_id,
+        on_delete=db.delete,
+        on_next_id=db.next_id,
     )
     connections = ConnectionService(
         endpoints=endpoints,
-        on_get=store.get,
+        on_get=db.get,
         on_replace=_replace,
         on_scan=_scan,
-        on_delete=store.delete,
-        on_next_id=store.next_id,
+        on_delete=db.delete,
+        on_next_id=db.next_id,
     )
     notes = NoteService(
-        on_get=store.get,
+        on_get=db.get,
         on_replace=_replace,
         on_scan=_scan,
-        on_delete=store.delete,
-        on_next_id=store.next_id,
+        on_delete=db.delete,
+        on_next_id=db.next_id,
     )
     refine = RefineService(boxes=boxes, connections=connections, endpoints=endpoints)
 
