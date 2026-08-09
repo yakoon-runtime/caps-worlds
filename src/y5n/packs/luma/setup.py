@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from y5n.runtime.store.event.models import IndexKey, IndexSpec, IndexTerm, ValueType
 from y5n.sdk import ports
-from y5n.sdk.store import StoreClient
+from y5n.sdk import store as store_factory
 
 from .bootstrap import bootstrap
 from .services import (
@@ -22,7 +22,7 @@ from .services import (
 
 async def main():
 
-    store = StoreClient()
+    store = store_factory()
 
     INDEX_ALL = IndexSpec(key=IndexKey("all"), value_type=ValueType.TEXT, unique=False)
 
