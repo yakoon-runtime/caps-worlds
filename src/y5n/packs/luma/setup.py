@@ -35,7 +35,10 @@ async def main():
         await db.ensure_indexes(namespace=ns, specs=[INDEX_ALL])
 
     async def _scan(namespace):
-        return await db.scan(namespace=namespace, index_key=IndexKey("all"), value="1")
+        keys, _ = await db.scan(
+            namespace=namespace, index_key=IndexKey("all"), value="1"
+        )
+        return await db.get_many(keys=keys)
 
     async def _replace(*, key, doc, indexes=(), snapshot_hint=None, expected_rev=None):
         idx = list(indexes) + [IndexTerm(key=IndexKey("all"), value="1")]
