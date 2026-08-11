@@ -26,7 +26,7 @@ def _patch_ports(monkeypatch, tmp_path):
     from y5n.runtime.api.runtime.bus import _make_default_bus
     from y5n.runtime.api.runtime.bus import get_bus as _get_bus
     from y5n.runtime.api.runtime.bus import set_bus as _set_bus
-    from y5n.runtime.engine.wire.adapter.store import StoreAdapter, StoreResolver
+    from y5n.runtime.engine.wire.adapter.store import StoreAdapter
     from y5n.runtime.store.event.backends.memory import MemoryBackend
     from y5n.runtime.store.event.runtime import StoreRuntime
     from y5n.runtime.store.event.store import create_entity_store
@@ -66,9 +66,7 @@ def _patch_ports(monkeypatch, tmp_path):
     )
     bus.transport.register_adapter(
         "store",
-        StoreAdapter(
-            resolver=StoreResolver(stores={"luma": runtime}),
-        ),
+        StoreAdapter(stores={"luma": runtime}),
     )
 
     import y5n.packs.luma.setup as luma_setup
