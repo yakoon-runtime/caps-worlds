@@ -1,4 +1,4 @@
-from y5n.sdk import context, io, ports
+from y5n.sdk import context, io, ports, session
 
 
 async def main():
@@ -34,8 +34,8 @@ async def main():
         box_id = box.id
 
     else:
-        ses = await ports.get("session").current()
-        current_box = ses["data"].get("luma.current_box")
+        ses = await session.current()
+        current_box = ses.data.get("luma.current_box")
         if not current_box:
             await io.write("No context. Use --box or enter a box first.")
             return

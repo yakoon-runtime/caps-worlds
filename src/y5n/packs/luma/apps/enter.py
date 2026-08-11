@@ -1,4 +1,4 @@
-from y5n.sdk import context, io, ports
+from y5n.sdk import context, io, ports, session
 
 
 async def _resolve_box(world_id: str, box_ref: str) -> str | None:
@@ -44,7 +44,7 @@ async def main():
         await io.write(f"Entry box #{target} not found.")
         return
 
-    await ports.get("session").update(patch={"data": {"luma.current_world": world.id}})
-    await ports.get("session").update(patch={"data": {"luma.current_box": box.id}})
+    await session.update(patch={"data": {"luma.current_world": world.id}})
+    await session.update(patch={"data": {"luma.current_box": box.id}})
 
     await io.write(f"Entered '{world.name}' at '{box.name}'.")

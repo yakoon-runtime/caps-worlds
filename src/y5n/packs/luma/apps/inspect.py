@@ -1,9 +1,9 @@
-from y5n.sdk import context, io, ports
+from y5n.sdk import context, io, ports, session
 
 
 async def main():
-    ses = await ports.get("session").current()
-    current_world = ses["data"].get("luma.current_world")
+    ses = await session.current()
+    current_world = ses.data.get("luma.current_world")
     box_name = context.request().arg(0)
 
     if not current_world:

@@ -1,12 +1,12 @@
-from y5n.sdk import context, io, ports
+from y5n.sdk import context, io, ports, session
 
 from ..models import Orientation
 
 
 async def main():
-    ses = await ports.get("session").current()
-    current_box = ses["data"].get("luma.current_box")
-    current_world = ses["data"].get("luma.current_world")
+    ses = await session.current()
+    current_box = ses.data.get("luma.current_box")
+    current_world = ses.data.get("luma.current_world")
     if not current_box or not current_world:
         await io.write("You are not inside any box. Use 'enter' first.")
         return
