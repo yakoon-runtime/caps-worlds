@@ -21,7 +21,7 @@ from .services import (
 
 async def main():
 
-    db = store()
+    db = store.get("luma")
 
     INDEX_ALL = IndexSpec(key=IndexKey("all"), value_type=ValueType.TEXT, unique=False)
 

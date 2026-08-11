@@ -26,13 +26,6 @@ def _patch_ports(monkeypatch, tmp_path):
     from y5n.runtime.api.runtime.bus import _make_default_bus
     from y5n.runtime.api.runtime.bus import get_bus as _get_bus
     from y5n.runtime.api.runtime.bus import set_bus as _set_bus
-    from y5n.runtime.api.runtime.context import set_context
-    from y5n.runtime.engine.executor import (
-        ExecutorKind,
-        ExecutorRegistry,
-        RuntimeExecutor,
-    )
-    from y5n.runtime.engine.nodes.tree import Tree
     from y5n.runtime.engine.wire.adapter.store import StoreAdapter, StoreResolver
     from y5n.runtime.store.event.backends.memory import MemoryBackend
     from y5n.runtime.store.event.runtime import StoreRuntime
@@ -42,16 +35,8 @@ def _patch_ports(monkeypatch, tmp_path):
     from y5n.runtime.store.sequence.runtime import Sequencer
 
     # Wire a real store behind the SDK `store` port so pack setup can use
-    # sdk.store() (ADR-17: the runtime owns the store). Resolution is
-    # strict (ADR-19): the luma pack declares its store once, at the pack
-    # root, and the SDK calls resolve through the tree.
-    (tmp_path / "luma" / ".yak").mkdir(parents=True, exist_ok=True)
-    (tmp_path / "luma" / ".yak" / "yak.yml").write_text("stores:\n  - luma\n")
-    executors = ExecutorRegistry()
-    executors.register(ExecutorKind.RUNTIME, RuntimeExecutor())
-    tree = Tree(root_path=tmp_path, executors=executors)
-    tree.build()
-
+    # sdk.store.get("luma") (ADR-17: the runtime owns the store; the resolver
+    # routes the bound name to the installation's store).
     previous_bus = _get_bus()
     bus = _make_default_bus()
     _set_bus(bus)
@@ -82,7 +67,7 @@ def _patch_ports(monkeypatch, tmp_path):
     bus.transport.register_adapter(
         "store",
         StoreAdapter(
-            resolver=StoreResolver(tree=tree, stores={"luma": runtime}),
+            resolver=StoreResolver(stores={"luma": runtime}),
         ),
     )
 
@@ -92,13 +77,9 @@ def _patch_ports(monkeypatch, tmp_path):
     monkeypatch.setattr(sdk_ports, "publish", _publish)
     monkeypatch.setattr(sdk_ports, "get", _get)
 
-    set_context({"node": {"path": "/luma", "stores": ["luma"]}})
-    try:
-        asyncio.run(luma_setup.main())
-        yield
-    finally:
-        set_context({})
-        _set_bus(previous_bus)
+    asyncio.run(luma_setup.main())
+    yield
+    _set_bus(previous_bus)
 
 
 @pytest.fixture
