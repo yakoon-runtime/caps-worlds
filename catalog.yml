@@ -1,6 +1,6 @@
 components:
   y5n-packs-luma:
-    location: y5n-packs-luma
+    location: .
 
 bundles:
   luma:
