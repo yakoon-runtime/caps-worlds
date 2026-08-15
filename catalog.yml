@@ -1,7 +1,7 @@
 components:
   y5n-packs-luma:
     location: .
-
+    release: y5n-packs-luma-v0.8.0
 bundles:
   luma:
-    - y5n-packs-luma
+  - y5n-packs-luma
