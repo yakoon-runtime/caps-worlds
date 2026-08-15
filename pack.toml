@@ -1,4 +1,0 @@
-name = "y5n-packs-luma"
-version = "0.8.0"
-description = "Interactive world: rooms, exits, inventory, notes, worlds"
-mount = "/opt/luma"
