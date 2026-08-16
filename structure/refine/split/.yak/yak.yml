@@ -4,7 +4,7 @@ navigable: false
 contextual: false
 host: /boot/python/runtime
 entry:
-  run: pack:y5n.caps.worlds.apps.refine.split:main
+  run: cap:y5n.caps.worlds.apps.refine.split:main
 invocation:
   params:
   - key: angle

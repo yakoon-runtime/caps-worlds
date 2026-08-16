@@ -4,7 +4,7 @@ resolvable: true
 navigable: false
 contextual: false
 entry:
-  run: pack:y5n.caps.worlds.apps.note.import:main
+  run: cap:y5n.caps.worlds.apps.note.import:main
 invocation:
   params:
   - key: file

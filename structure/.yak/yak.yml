@@ -1,11 +1,11 @@
-title: Luma
+title: Worlds
 host: /boot/python/runtime
 resolvable: false
 navigable: true
 contextual: false
 
 stores:
-  - luma
+  - worlds
 
 entry:
-  setup: pack:y5n.caps.worlds.setup:main
+  setup: cap:y5n.caps.worlds.setup:main

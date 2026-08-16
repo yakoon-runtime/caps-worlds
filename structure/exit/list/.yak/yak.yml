@@ -4,7 +4,7 @@ resolvable: true
 navigable: false
 contextual: false
 entry:
-  run: pack:y5n.caps.worlds.apps.exit.list:main
+  run: cap:y5n.caps.worlds.apps.exit.list:main
 invocation:
   params:
   - key: world

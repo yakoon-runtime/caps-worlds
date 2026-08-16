@@ -4,7 +4,7 @@ resolvable: true
 navigable: false
 contextual: false
 entry:
-  run: pack:y5n.caps.worlds.apps.inv:main
+  run: cap:y5n.caps.worlds.apps.inv:main
 resources:
   ref: resource:y5n.caps.worlds.resources.loader:content
   man:

@@ -4,7 +4,7 @@ resolvable: true
 navigable: false
 contextual: false
 entry:
-  run: pack:y5n.caps.worlds.apps.box.delete:main
+  run: cap:y5n.caps.worlds.apps.box.delete:main
 invocation:
   params:
   - key: name
