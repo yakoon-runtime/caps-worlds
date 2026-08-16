@@ -4,7 +4,7 @@ resolvable: true
 navigable: false
 contextual: false
 entry:
-  run: pack:y5n.packs.luma.apps.note.edit:main
+  run: pack:y5n.caps.worlds.apps.note.edit:main
 invocation:
   params:
   - key: name
@@ -13,7 +13,7 @@ invocation:
   - key: new-name
   - key: content
 resources:
-  ref: resource:y5n.packs.luma.resources.loader:content
+  ref: resource:y5n.caps.worlds.resources.loader:content
   man:
     default:
       path: note/edit/man.ydf

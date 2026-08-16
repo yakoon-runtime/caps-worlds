@@ -4,7 +4,7 @@ navigable: false
 contextual: false
 host: /boot/python/runtime
 entry:
-  run: pack:y5n.packs.luma.apps.refine.split:main
+  run: pack:y5n.caps.worlds.apps.refine.split:main
 invocation:
   params:
   - key: angle
@@ -12,7 +12,7 @@ invocation:
     positional: true
   - key: offset
 resources:
-  ref: resource:y5n.packs.luma.resources.loader:content
+  ref: resource:y5n.caps.worlds.resources.loader:content
   man:
     default:
       path: refine/split/man.ydf

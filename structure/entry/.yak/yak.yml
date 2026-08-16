@@ -4,7 +4,7 @@ resolvable: true
 navigable: false
 contextual: false
 entry:
-  run: pack:y5n.packs.luma.apps.entry:main
+  run: pack:y5n.caps.worlds.apps.entry:main
 invocation:
   params:
   - key: world
@@ -12,7 +12,7 @@ invocation:
     positional: true
   - key: box
 resources:
-  ref: resource:y5n.packs.luma.resources.loader:content
+  ref: resource:y5n.caps.worlds.resources.loader:content
   man:
     default:
       path: entry/man.ydf

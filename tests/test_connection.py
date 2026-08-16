@@ -1,5 +1,5 @@
 import pytest
-from y5n.packs.luma.models import Orientation
+from y5n.caps.worlds.models import Orientation
 
 
 def _angle(direction: str) -> float:

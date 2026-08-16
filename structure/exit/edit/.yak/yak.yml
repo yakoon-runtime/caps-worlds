@@ -4,7 +4,7 @@ resolvable: true
 navigable: false
 contextual: false
 entry:
-  run: pack:y5n.packs.luma.apps.exit.edit:main
+  run: pack:y5n.caps.worlds.apps.exit.edit:main
 invocation:
   params:
   - key: name
@@ -18,7 +18,7 @@ invocation:
   - key: description
   - key: direction
 resources:
-  ref: resource:y5n.packs.luma.resources.loader:content
+  ref: resource:y5n.caps.worlds.resources.loader:content
   man:
     default:
       path: exit/edit/man.ydf

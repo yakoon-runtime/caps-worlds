@@ -4,14 +4,14 @@ resolvable: true
 navigable: false
 contextual: false
 entry:
-  run: pack:y5n.packs.luma.apps.exit.list:main
+  run: pack:y5n.caps.worlds.apps.exit.list:main
 invocation:
   params:
   - key: world
     required: true
   - key: box
 resources:
-  ref: resource:y5n.packs.luma.resources.loader:content
+  ref: resource:y5n.caps.worlds.resources.loader:content
   man:
     default:
       path: exit/list/man.ydf

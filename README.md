@@ -1,8 +1,8 @@
-# Luma
+# Worlds
 
 *A spatial memory system built on Yakoon.*
 
-Luma helps you think in *places* instead of folders.
+Worlds helps you think in *places* instead of folders.
 
 Most knowledge systems organize information in trees, tags or search
 indexes.
@@ -15,11 +15,11 @@ A childhood bedroom. A bookshelf. A desk. A drawer. A pocket. A box.
 
 Spatial memory is one of the strongest memory systems we possess.
 
-Luma explores a simple question:
+Worlds explores a simple question:
 
 > **What if knowledge were stored the same way we naturally remember it?**
 
-Instead of folders, Luma offers *worlds*. Instead of documents, *boxes*.
+Instead of folders, Worlds offers *worlds*. Instead of documents, *boxes*.
 Instead of hyperlinks, *connections*. Instead of attaching notes to objects,
 notes exist independently and become meaningful only when *placed*
 somewhere.
@@ -81,18 +81,18 @@ note/put Time
 
 Not all commands — just the flow of thought.
 
-## What Luma is not
+## What Worlds is not
 
 - Not a wiki.
 - Not a note-taking app.
 - Not a MUD.
 - Not a file system.
 
-Luma borrows ideas from all of them but follows a different model:
-**Luma separates creating ideas from placing them.**
+Worlds borrows ideas from all of them but follows a different model:
+**Worlds separates creating ideas from placing them.**
 
 ## Built on Yakoon
 
-Luma is implemented as a Yakoon Space. It demonstrates how spatial
+Worlds is implemented as a Yakoon Space. It demonstrates how spatial
 knowledge, navigation and process-oriented runtime services can be
 combined into a persistent thinking environment.

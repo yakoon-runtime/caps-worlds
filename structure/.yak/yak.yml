@@ -8,4 +8,4 @@ stores:
   - luma
 
 entry:
-  setup: pack:y5n.packs.luma.setup:main
+  setup: pack:y5n.caps.worlds.setup:main

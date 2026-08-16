@@ -4,14 +4,14 @@ resolvable: true
 navigable: false
 contextual: false
 entry:
-  run: pack:y5n.packs.luma.apps.box.list:main
+  run: pack:y5n.caps.worlds.apps.box.list:main
 invocation:
   params:
   - key: world
     required: true
   - key: parent
 resources:
-  ref: resource:y5n.packs.luma.resources.loader:content
+  ref: resource:y5n.caps.worlds.resources.loader:content
   man:
     default:
       path: box/list/man.ydf

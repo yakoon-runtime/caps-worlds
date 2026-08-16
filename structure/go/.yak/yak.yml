@@ -4,14 +4,14 @@ resolvable: true
 navigable: false
 contextual: false
 entry:
-  run: pack:y5n.packs.luma.apps.go:main
+  run: pack:y5n.caps.worlds.apps.go:main
 invocation:
   params:
   - key: direction
     required: true
     positional: true
 resources:
-  ref: resource:y5n.packs.luma.resources.loader:content
+  ref: resource:y5n.caps.worlds.resources.loader:content
   man:
     default:
       path: go/man.ydf

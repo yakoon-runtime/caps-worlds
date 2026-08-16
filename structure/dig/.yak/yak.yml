@@ -4,7 +4,7 @@ resolvable: true
 navigable: false
 contextual: false
 entry:
-  run: pack:y5n.packs.luma.apps.dig:main
+  run: pack:y5n.caps.worlds.apps.dig:main
 invocation:
   params:
   - key: name
@@ -16,7 +16,7 @@ invocation:
   - key: oneway
     kind: flag
 resources:
-  ref: resource:y5n.packs.luma.resources.loader:content
+  ref: resource:y5n.caps.worlds.resources.loader:content
   man:
     default:
       path: dig/man.ydf

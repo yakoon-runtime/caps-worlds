@@ -35,7 +35,7 @@ def _patch_ports(monkeypatch, tmp_path):
     from y5n.runtime.store.sequence.runtime import Sequencer
 
     # Wire a real store behind the SDK `store` port so pack setup can use
-    # sdk.store.get("luma") (ADR-17: the runtime owns the store; the resolver
+    # sdk.store.get("worlds") (ADR-17: the runtime owns the store; the resolver
     # routes the bound name to the installation's store).
     previous_bus = _get_bus()
     bus = _make_default_bus()
@@ -66,45 +66,45 @@ def _patch_ports(monkeypatch, tmp_path):
     )
     bus.transport.register_adapter(
         "store",
-        StoreAdapter(stores={"luma": runtime}),
+        StoreAdapter(stores={"worlds": runtime}),
     )
 
-    import y5n.packs.luma.setup as luma_setup
+    import y5n.caps.worlds.setup as worlds_setup
     import y5n.sdk.ports as sdk_ports
 
     monkeypatch.setattr(sdk_ports, "publish", _publish)
     monkeypatch.setattr(sdk_ports, "get", _get)
 
-    asyncio.run(luma_setup.main())
+    asyncio.run(worlds_setup.main())
     yield
     _set_bus(previous_bus)
 
 
 @pytest.fixture
 def worlds():
-    return _get("luma.world.service")
+    return _get("worlds.world.service")
 
 
 @pytest.fixture
 def boxes():
-    return _get("luma.box.service")
+    return _get("worlds.box.service")
 
 
 @pytest.fixture
 def endpoints():
-    return _get("luma.endpoint.service")
+    return _get("worlds.endpoint.service")
 
 
 @pytest.fixture
 def connections():
-    return _get("luma.connection.service")
+    return _get("worlds.connection.service")
 
 
 @pytest.fixture
 def refine():
-    return _get("luma.refine.service")
+    return _get("worlds.refine.service")
 
 
 @pytest.fixture
 def notes():
-    return _get("luma.note.service")
+    return _get("worlds.note.service")

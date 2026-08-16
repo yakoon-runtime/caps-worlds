@@ -4,7 +4,7 @@ resolvable: true
 navigable: false
 contextual: false
 entry:
-  run: pack:y5n.packs.luma.apps.note.remove:main
+  run: pack:y5n.caps.worlds.apps.note.remove:main
 invocation:
   params:
   - key: name
@@ -13,7 +13,7 @@ invocation:
   - key: box
   - key: world
 resources:
-  ref: resource:y5n.packs.luma.resources.loader:content
+  ref: resource:y5n.caps.worlds.resources.loader:content
   man:
     default:
       path: note/remove/man.ydf
