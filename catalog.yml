@@ -1,7 +1,5 @@
 components:
-  y5n-caps-worlds:
-    location: .
-    release: y5n-caps-worlds-v0.8.0
+  - location: .
 bundles:
   luma:
   - y5n-caps-worlds
