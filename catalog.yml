@@ -1,5 +1,6 @@
 components:
-  - location: .
+  y5n-caps-worlds:
+    location: .
 bundles:
   luma:
-  - y5n-caps-worlds
+    - y5n-caps-worlds
