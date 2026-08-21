@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -15,8 +16,22 @@ def _get(name: str) -> Any:
     return _services.get(name)
 
 
+def _is_caps_worlds_test(node) -> bool:
+    """This conftest is autouse; guard it so it only affects caps-worlds tests.
+
+    In a combined multi-project pytest run the same conftest file is applied
+    to sibling test trees (e.g. caps-ident). That global monkeypatch of
+    ``y5n.sdk.ports`` would otherwise break other packs' port-based tests.
+    """
+    this_dir = Path(__file__).resolve().parent
+    fspath = Path(getattr(node, "fspath", "")).resolve() if getattr(node, "fspath", None) else None
+    return fspath is not None and this_dir in fspath.parents
+
+
 @pytest.fixture(autouse=True)
-def _patch_ports(monkeypatch, tmp_path):
+def _patch_ports(request, monkeypatch, tmp_path):
+    if not _is_caps_worlds_test(request.node):
+        return
     _services.clear()
     import asyncio
     import os
