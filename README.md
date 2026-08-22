@@ -5,6 +5,8 @@
 [![Python](https://img.shields.io/badge/Python-3.13+-blue.svg)]()
 [![Tests](https://github.com/yakoon-runtime/caps-worlds/actions/workflows/tests.yml/badge.svg)](https://github.com/yakoon-runtime/caps-worlds/actions/workflows/tests.yml)
 
+**Status: Early development**
+
 *A spatial memory system built on Yakoon.*
 
 Worlds helps you think in *places* instead of folders.
@@ -101,3 +103,8 @@ Worlds borrows ideas from all of them but follows a different model:
 Worlds is implemented as a Yakoon Space. It demonstrates how spatial
 knowledge, navigation and process-oriented runtime services can be
 combined into a persistent thinking environment.
+
+## Links
+
+- Developer setup: [yakoon-runtime/developer](https://github.com/yakoon-runtime/developer)
+- Runtime: [yakoon-runtime/runtime](https://github.com/yakoon-runtime/runtime)
