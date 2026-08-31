@@ -104,6 +104,20 @@ Worlds is implemented as a Yakoon Space. It demonstrates how spatial
 knowledge, navigation and process-oriented runtime services can be
 combined into a persistent thinking environment.
 
+## Store
+
+Worlds uses the logical store `worlds`.
+
+For persistent deployments, configure it with:
+
+    yak configure worlds
+
+Using an environment reference for the database DSN is recommended:
+
+    env://WORLDS_DATABASE
+
+See the [Yakoon deployment documentation](https://github.com/yakoon-runtime/runtime/blob/main/docs/concepts/deployment.md) for details.
+
 ## Links
 
 - Developer setup: [yakoon-runtime/developer](https://github.com/yakoon-runtime/developer)
