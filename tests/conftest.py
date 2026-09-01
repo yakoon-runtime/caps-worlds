@@ -31,6 +31,11 @@ def _is_caps_worlds_test(node) -> bool:
 @pytest.fixture(autouse=True)
 def _patch_ports(request, monkeypatch, tmp_path):
     if not _is_caps_worlds_test(request.node):
+        # pytest may expose this autouse fixture globally in multi-root runs
+        # (orphaned-conftest handling parses it at session level). A yield-style
+        # fixture must reach its yield on every execution path, or setup fails
+        # with "did not yield a value" — so no-op here instead of returning.
+        yield
         return
     _services.clear()
     import asyncio
