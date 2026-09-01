@@ -80,7 +80,7 @@ def _patch_ports(request, monkeypatch, tmp_path):
         path="/",
     )
     bus.transport.register_adapter(
-        "store",
+        "system:store",
         StoreAdapter(stores={"worlds": runtime}),
     )
 
